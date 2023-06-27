@@ -1,5 +1,5 @@
-//Here we are given an array with n 
-
+//Salesforce coding round-Here we are given an array with n elements and we have to divide it into m parts so that maximum sum of a section is minimum
+//learning-whenever confused to find a desired number from some range apply binary search for optimized solution
 #include <bits/stdc++.h>
 
 using namespace std;
