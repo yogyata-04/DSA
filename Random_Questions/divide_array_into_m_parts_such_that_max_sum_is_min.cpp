@@ -1,3 +1,5 @@
+//Here we are given an array with n 
+
 #include <bits/stdc++.h>
 
 using namespace std;
@@ -8,13 +10,19 @@ int main()
     cin>>n>>m;
     vector<int> vec;
     int x;
-    int mini=INT_MAX;
+    int mini=INT_MAX,maxi=0;
     int sum=0;
     for(int i=0;i<n;i++){
         cin>>x;
         vec.push_back(x);
         mini=min(mini,vec[i]);
+        maxi=max(maxi,vec[i]);
         sum+=vec[i];
+    }
+    if(m>=n)
+    {
+        cout<<maxi<<endl;
+        return 0;
     }
     int low=mini;
     int high=sum;
