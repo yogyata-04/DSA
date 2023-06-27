@@ -1,6 +1,6 @@
 //We are given a number n such that we consider array with elements 1,2,---,n-1 and now we have to remove minimum no. from array such that product of elements % n = 1
 //Concept- (a*b)%n=(a%n)*(b%n)
-
+//this solution is to be changed 
 #include<bits/stdc++.h>
 using namespace std;
 int main(){
