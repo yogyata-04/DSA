@@ -11,4 +11,17 @@ Output: 3
 Explanation: Increment the first element three times and the second element two times to make nums = [4,4,4].
 4 has a frequency of 3.
 
+Approach- number is going to exist in the array. We can prove it by considering case of nums[i]-1 and nums[i]+1, in both cases extra k is exhausted for incrementing.
+
 Code:
+int maxFrequency(vector<int>& nums, int k) {
+      int n=nums.size();
+      long long sum=0;
+      int left=0;
+      sort(nums.begin(),nums.end());
+      for(int i=0;i<n;i++){
+          sum+=nums[i];
+          if((long long)nums[i]*(i-left+1)-sum>k) {sum-=nums[left];left++;}
+      }
+      return n-left;
+  }
