@@ -246,3 +246,60 @@ int main(){
     ans=single_number(vec1);
     cout<<ans;
 }
+
+//Longest subarray with sum K (Positives + Negatives)
+int longestsubarraywithsumk(vector<int> vec,int req_sum){
+    int n=vec.size();
+    int ans=0;
+    
+    //TC->O(n^3) SC->O(1)
+    // for(int i=0;i<n;i++){
+    //     for(int j=0;j<n;j++){
+    //         int sum=0;
+    //         for(int k=i;k<=j;k++){
+    //             sum+=vec[k];
+    //         }
+    //         if(sum==req_sum) ans=max(j-i+1,ans); 
+    //     }
+    // }
+    
+    //TC->O(n^2) SC->O(1)
+    // for(int i=0;i<n;i++){
+    //     int sum=0;
+    //     for(int j=i;j<n;j++){
+    //         sum+=vec[j];
+    //         if(sum==req_sum) ans=max(j-i+1,ans); 
+    //     }
+    // }
+    
+    //TC->O(nlogn) or O(n) depending on which map we are using , SC->O(n)
+    // map<int,int> mp; //sum,index
+    // int sum=0;
+    // for(int i=0;i<n;i++){
+    //     sum+=vec[i];
+    //     if(sum==req_sum){
+    //         ans=max(ans,i+1);
+    //     }
+    //     int req=req_sum-sum;
+    //     if(mp.find(req)!=mp.end()){
+    //         ans=max(ans,i-mp[req]+1);
+    //     }
+    //     mp[sum]=i;
+    // }
+    
+    //if we have only positives then we can further optimise solution
+    //TC->O(2*n) SC->O(1)
+    int sum=0;
+    int start=0,end=0;
+    while(end<n){
+        sum+=vec[end];
+        while(sum>req_sum && end>start){
+            sum-=vec[start];
+            start++;
+        }
+        if(sum==req_sum) ans=max(ans,end-start+1);
+        end++;
+    }
+    
+    return ans;
+}
