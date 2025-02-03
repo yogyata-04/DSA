@@ -108,6 +108,30 @@ vector<vector<int>> levelorder(Node* root){
 //POSTORDER TRAVERSAL USING 2 STACKS
 
 //POSTORDERTRAVERSAL USING 1 STACK
+void iterativepostorder(Node* root){
+    if(root==NULL) return;
+    vector<Node*> ans;
+    stack<Node*> st;
+    st.push(root);
+    map<Node*,int> vis;
+    while(!st.empty()){
+        auto top=st.top();
+        if(vis[top]==1) {
+            cout<<top->data<<" ";
+            //ans.push_back(top);
+            st.pop(); 
+            continue;
+        }
+        vis[top]=1;
+        if(top->right){
+            st.push(top->right);
+        }
+        if(top->left){
+            st.push(top->left);
+        }
+    }
+    // return ans;
+}
 
 //ALL TRAVERSAL IN ONE GO
 
