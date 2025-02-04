@@ -175,6 +175,107 @@ vector<vector<int>> verticaltraversal(Node* root){
     return ans;
 }
 
+//vertical order traversal if we need nodes at same x,y in sorted order
+//TC->O(n*logn*logn*logn) SC->O(n(map)+n/2(max space occupied by queue))
+//Multiset Operations to insert overlapping nodes at a specific vertical and horizontal level also takes O(log2N) complexity.
+//Map operations involve insertion and retrieval of nodes with their vertical and level as their keys. Since there are two nested maps, the total time complexity becomes O(log2N)*O(log2N).
+//remember here we need to use multiset if we want to have sorted orded of nodes at same x,y value, else we can simply use map<int,vector<int,int>>
+vector<vector<int>> verticaltraversal(Node* root){
+    vector<vector<int>> ans;
+    map<int,map<int,multiset<int>>> mp;
+    queue<pair<Node*, pair<int,int>>> q;
+    q.push({root,{0,0}});
+    while(!q.empty()){
+        int n=q.size();
+        while(n--){
+            auto front=q.front();
+            q.pop();
+            int x=front.second.first;
+            int y=front.second.second;
+            Node* curr=front.first;
+            mp[x][y].insert(curr->data);
+            if(curr->left){
+                q.push({curr->left,{x-1,y+1}});
+            }
+            if(curr->right){
+                q.push({curr->right,{x+1,y+1}});
+            }
+        }
+    }
+    //IMPORTANT syntax
+    for(auto it:mp){
+        vector<int> col;
+        for(auto level:it.second){
+            col.insert(col.end(),level.second.begin(),level.second.end());
+        }
+        ans.push_back(col);
+    }
+    return ans;
+}
+
+//top view of binary tree
+//TC->O(n*logn) SC->O(n/2+n/2)
+vector<int> topview(Node* root){
+    if(root==NULL) return {};
+    queue<pair<Node*,pair<int,int>>>q;
+    q.push({root,{0,0}});
+    vector<int> ans;
+    map<int,int> mp;
+    while(!q.empty()){
+        int n=q.size();
+        while(n--){
+            auto front=q.front();
+            q.pop();
+            int x=front.second.first;
+            int y=front.second.second;
+            Node* curr=front.first;
+            if(!mp[x]) mp[x]=curr->data;
+            if(curr->left){
+                q.push({curr->left,{x-1,y+1}});
+            }
+            if(curr->right){
+                q.push({curr->right,{x+1,y+1}});
+            }
+        }
+    }
+    for(auto it:mp){
+        ans.push_back(it);
+    }
+    return ans;
+}
+
+//bottom view of binary tree
+//TC->O(n) SC->O(n/2+n/2)
+vector <int> bottomView(Node *root) {
+    // Your Code Here
+    if(root==NULL) return {};
+    queue<pair<Node*,pair<int,int>>>q;
+    q.push({root,{0,0}});
+    vector<int> ans;
+    map<int,int> mp;
+    while(!q.empty()){
+        int n=q.size();
+        while(n--){
+            auto front=q.front();
+            q.pop();
+            int x=front.second.first;
+            int y=front.second.second;
+            Node* curr=front.first;
+            mp[x]=curr->data;
+            if(curr->left){
+                q.push({curr->left,{x-1,y+1}});
+            }
+            if(curr->right){
+                q.push({curr->right,{x+1,y+1}});
+            }
+        }
+    }
+    for(auto it:mp){
+        ans.push_back(it.second);
+    }
+    return ans;
+}
+
 int main(){
     Node* root=new Node(1);
     root->left=new Node(2);
