@@ -94,6 +94,87 @@ vector<vector<int>> zigzaglevelorder(Node* root){
     return ans;
 }
 
+//boundary traversal of binary tree
+//TC->O(h+n+h) SC->O(3n);
+vector<int> boundaryleft(Node* root){
+    if(root==NULL) return {};
+    vector<int> left;
+    while(root->left || root->right){
+        left.push_back(root->data);
+        if(root->left) root=root->left;
+        else if(root->right) root=root->right;
+    }
+    return left;
+}
+
+void boundarybottom(Node* root,vector<int> &bottom){
+    if(root==NULL) return;
+    if(!root->left && !root->right) bottom.push_back(root->data);
+    if(root->left) boundarybottom(root->left,bottom);
+    if(root->right) boundarybottom(root->right,bottom);
+}
+
+vector<int> boundaryright(Node* root){
+    if(root==NULL) return {};
+    vector<int> right;
+    while(root->left || root->right){
+        right.push_back(root->data);
+        if(root->right) root=root->right;
+        else if(root->left) root=root->left;
+    }
+    reverse(right.begin(),right.end());
+    return right;
+}
+
+//remember here right traversal should have root->right and not root else what if tree is scewed, then left and right traversal will be same which is wrong
+void boundarytraversal(Node* root){
+    if(root==NULL) return ;
+    vector<int> left=boundaryleft(root);
+    vector<int> right;
+    if(root->right) right=boundaryright(root->right);
+    vector<int> bottom;
+    boundarybottom(root,bottom);
+    for(auto it:left){
+        cout<<it<<" ";
+    }
+    for(auto it:bottom){
+        cout<<it<<" ";
+    }
+    int n=right.size();
+    for(int i=0;i<n;i++){
+        cout<<right[i]<<" ";
+    }
+}
+
+//vertical order traversal
+vector<vector<int>> verticaltraversal(Node* root){
+    vector<vector<int>> ans;
+    map<int,vector<int>> mp;
+    queue<pair<Node*, pair<int,int>>> q;
+    q.push({root,{0,0}});
+    while(!q.empty()){
+        int n=q.size();
+        while(n--){
+            auto front=q.front();
+            q.pop();
+            int x=front.second.first;
+            int y=front.second.second;
+            Node* curr=front.first;
+            mp[x].push_back(curr->data);
+            if(curr->left){
+                q.push({curr->left,{x-1,y+1}});
+            }
+            if(curr->right){
+                q.push({curr->right,{x+1,y+1}});
+            }
+        }
+    }
+    for(auto it:mp){
+        ans.push_back(it.second);
+    }
+    return ans;
+}
+
 int main(){
     Node* root=new Node(1);
     root->left=new Node(2);
