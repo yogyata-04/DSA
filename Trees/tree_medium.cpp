@@ -276,6 +276,55 @@ vector <int> bottomView(Node *root) {
     return ans;
 }
 
+//print right side of binary tree
+//TC->O(n) SC->O(height+height(recursion stack space))
+//brute solution
+vector<int> rightview(Node* root){
+    // if(root==NULL) return;
+    // vector<int> ans;
+    // queue<Node*> q;
+    // q.push(root);
+    // while(!q.empty()){
+    //     int n=q.size();
+    //     int temp=0;
+    //     while(n--){
+    //         auto front=q.front();
+    //         q.pop();
+    //         temp=front->data
+    //         if(front->left){
+    //             q.push(front->left);
+    //         }
+    //         if(front->right){
+    //             q.push(front->right);
+    //         }
+    //     }
+    //     ans.push_back(temp);
+    // }
+    // return ans;
+    vector<int> ans;
+    dfs(root,ans,0);
+    return ans;
+}
+//optimised solution (using dfs)
+void dfs(Node* root,vector<int> &ans,int level){
+    if(root==NULL) return;
+    if(level==ans.size()) ans.push_back(root->data);
+    dfs(root->right,ans,level+1);
+    dfs(root->left,ans,level+1);
+}
+
+//check if tree is symmetric about root vertical, i.e., line passing through root should act as mirror
+//TC->O(N) SC->O(height)
+bool helper(TreeNode* root1,TreeNode* root2){
+    if(root1==NULL || root2==NULL) return root1==root2;
+    return root1->data==root2->data && helper(root1->left,root2->right) && helper(root1->right,root2->left);
+}
+
+bool isSymmetric(TreeNode* root) {
+    if(root==NULL) return true;
+    return helper(root->left,root->right);
+}
+
 int main(){
     Node* root=new Node(1);
     root->left=new Node(2);
