@@ -1,1 +1,290 @@
+#include<bits/stdc++.h>
+using namespace std;
 
+
+// 32 Bit System	    64 Bit System
+// Int - 4 Bytes	    Int - 4 Bytes
+// Pointer - 4 Bytes	Pointer - 8 Bytes
+// Overall - 8 Bytes	Overall - 12 Bytes
+class node{
+    public:
+        int val;
+        node* next;
+        node(int data){
+            val=data;
+            next=NULL;
+        }
+        node(){
+            val=0;
+            next=NULL;
+        }
+};
+
+//constructing a new linked list
+//TC->O(n) SC->O(n)
+node* constructll(vector<int> arr){
+    int n=arr.size();
+    if(n==0) NULL;
+    node* root=new node(arr[0]);
+    node* temp=root;
+    for(int i=1;i<n;i++){
+        temp->next=new node(arr[i]);
+        temp=temp->next;
+    }
+    return root;
+}
+
+//print linked list
+void printll(node* head){
+    while(head){
+        cout<<head->val<<" ";
+        head=head->next;
+    }
+}
+
+//insert node in linked list at end (easy only) TC->O(n) SC->O(1)
+
+//inserting head 
+void insertathead(node* &head,int x){
+    if(head==NULL) return;
+    node* newhead=new node(x);
+    newhead->next=head;
+    head=newhead;
+}
+
+//delete given node when head is not given - simply copy next value in present node and delete next node TC->O(1)
+//normal deletion when val is given and not node* to be deleted - TC->O(n)
+
+//count length of ll - TC->O(n)
+
+//search an element in ll TC->O(n)
+
+//construct Doubly linked list from vector TC->O(n)
+
+//add node just after pth position in dll 
+//TC->O(n) SC->O(1)
+//remember the case when next node is null for pth position node
+Node *addNode(Node *head, int pos, int data) {
+    Node* temp=head;
+    if(pos==0){
+        Node* temp1=new Node(data);
+        temp1->next=head;
+        head->prev=temp1;
+        return temp1;
+    }
+    for(int i=0;i<pos;i++){
+        temp=temp->next;
+    }
+    Node* tmp=temp->next;
+    //adding new node
+    temp->next=new Node(data);
+    temp->next->prev=temp;
+    //making connections with tmp node
+    if(tmp!=NULL){
+        temp=temp->next;
+        temp->next=tmp;
+        tmp->prev=temp;
+    }
+    return head;
+}
+
+// Function to delete a node with given value.
+//Remember edge cases when node can be head or tail
+//TC->O(n) SC->O(1)
+Node* deleteNode(Node* head, int x) {
+    Node* temp=head;
+    while(temp){
+        if(temp->data==x){
+            //tail case
+            if(temp->next==NULL) {
+                temp->prev->next=NULL;
+                delete(temp);
+                return head;
+            }
+            //head case
+            if(temp->prev==NULL){
+                temp->next->prev=NULL;
+                head=temp->next;
+                delete(temp);
+                return head;
+            }
+            temp->next->prev=temp->prev;
+            temp->prev->next=temp->next;
+            delete(temp);
+            return head;
+        }
+        temp=temp->next;
+    }
+    return head;
+}
+
+// Function to reverse a doubly linked list
+//remember to return node when node->prev==NULL after manipulation
+// TC->O(n) SC->O(1)
+DLLNode* reverseDLL(DLLNode* head) {
+    DLLNode* temp=head;
+    while(temp){
+        DLLNode* tmp=temp->next;
+        temp->next=temp->prev;
+        temp->prev=tmp;
+        if(temp->prev==NULL){
+            return temp;
+        }
+        temp=temp->prev;
+    }
+    return head;
+}
+
+int main(){
+    vector<int> vec={1,2,3,4,5,6};
+    node* head=constructll(vec);
+    insertathead(head,7);
+    printll(head);
+    
+    int n=0;
+
+  
+}#include<bits/stdc++.h>
+using namespace std;
+
+
+// 32 Bit System	    64 Bit System
+// Int - 4 Bytes	    Int - 4 Bytes
+// Pointer - 4 Bytes	Pointer - 8 Bytes
+// Overall - 8 Bytes	Overall - 12 Bytes
+class node{
+    public:
+        int val;
+        node* next;
+        node(int data){
+            val=data;
+            next=NULL;
+        }
+        node(){
+            val=0;
+            next=NULL;
+        }
+};
+
+//constructing a new linked list
+//TC->O(n) SC->O(n)
+node* constructll(vector<int> arr){
+    int n=arr.size();
+    if(n==0) NULL;
+    node* root=new node(arr[0]);
+    node* temp=root;
+    for(int i=1;i<n;i++){
+        temp->next=new node(arr[i]);
+        temp=temp->next;
+    }
+    return root;
+}
+
+//print linked list
+void printll(node* head){
+    while(head){
+        cout<<head->val<<" ";
+        head=head->next;
+    }
+}
+
+//insert node in linked list at end (easy only) TC->O(n) SC->O(1)
+
+//inserting head 
+void insertathead(node* &head,int x){
+    if(head==NULL) return;
+    node* newhead=new node(x);
+    newhead->next=head;
+    head=newhead;
+}
+
+//delete given node when head is not given - simply copy next value in present node and delete next node TC->O(1)
+//normal deletion when val is given and not node* to be deleted - TC->O(n)
+
+//count length of ll - TC->O(n)
+
+//search an element in ll TC->O(n)
+
+//construct Doubly linked list from vector TC->O(n)
+
+//add node just after pth position in dll 
+//TC->O(n) SC->O(1)
+//remember the case when next node is null for pth position node
+Node *addNode(Node *head, int pos, int data) {
+    Node* temp=head;
+    if(pos==0){
+        Node* temp1=new Node(data);
+        temp1->next=head;
+        head->prev=temp1;
+        return temp1;
+    }
+    for(int i=0;i<pos;i++){
+        temp=temp->next;
+    }
+    Node* tmp=temp->next;
+    //adding new node
+    temp->next=new Node(data);
+    temp->next->prev=temp;
+    //making connections with tmp node
+    if(tmp!=NULL){
+        temp=temp->next;
+        temp->next=tmp;
+        tmp->prev=temp;
+    }
+    return head;
+}
+
+// Function to delete a node with given value.
+//Remember edge cases when node can be head or tail
+//TC->O(n) SC->O(1)
+Node* deleteNode(Node* head, int x) {
+    Node* temp=head;
+    while(temp){
+        if(temp->data==x){
+            //tail case
+            if(temp->next==NULL) {
+                temp->prev->next=NULL;
+                delete(temp);
+                return head;
+            }
+            //head case
+            if(temp->prev==NULL){
+                temp->next->prev=NULL;
+                head=temp->next;
+                delete(temp);
+                return head;
+            }
+            temp->next->prev=temp->prev;
+            temp->prev->next=temp->next;
+            delete(temp);
+            return head;
+        }
+        temp=temp->next;
+    }
+    return head;
+}
+
+// Function to reverse a doubly linked list
+//remember to return node when node->prev==NULL after manipulation
+// TC->O(n) SC->O(1)
+DLLNode* reverseDLL(DLLNode* head) {
+    DLLNode* temp=head;
+    while(temp){
+        DLLNode* tmp=temp->next;
+        temp->next=temp->prev;
+        temp->prev=tmp;
+        if(temp->prev==NULL){
+            return temp;
+        }
+        temp=temp->prev;
+    }
+    return head;
+}
+
+int main(){
+    vector<int> vec={1,2,3,4,5,6};
+    node* head=constructll(vec);
+    insertathead(head,7);
+    printll(head);
+    int n=0;
+}
