@@ -209,6 +209,82 @@ int xorsubarrays(vector<int> &arr, int req_xor_sum) {
     return ans;
 }
 
+//merge overlapping intervals
+vector<vector<int>> mergeoverlaps(vector<vector<int>> vec){
+    int n=vec.size();
+    sort(vec.begin(),vec.end());
+    vector<vector<int>> ans;
+    int start=vec[0][0],end=vec[0][1];
+    for(int i=1;i<n;i++){
+        if(vec[i][0]>end){
+            ans.push_back({start,end});
+            start=vec[i][0];
+            end=vec[i][1];
+        }
+        else{
+            end=max(end,vec[i][1]);
+        }
+    }
+    ans.push_back({start,end});
+    return ans;
+}
+
+//merge two sorted arrays without extra space;
+//remember case when m==0(transfer entire vec2 into vec1) or n==0(return no change required)
+//also remember in sort function last element is excluded
+//TC->O(min(n,m)+nlogn+mlogm+n) SC->O(1)
+void merge(vector<int>& vec1, int m, vector<int>& vec2, int n) {
+    int i=m-1,j=0;//i for vec1 and j for vec2
+    if(n==0) return;
+    if(m==0){
+        for(int i=0;i<n;i++){
+            vec1[i]=vec2[i];
+        }
+        return;
+    }
+    while(i>=0 && j<n){
+        if(vec1[i]>vec2[j]){
+            swap(vec1[i],vec2[j]);
+            i--;j++;
+        }
+        else{
+            break;
+        }
+    }
+    sort(vec1.begin(),vec1.begin()+m);
+    sort(vec2.begin(),vec2.end());
+    for(int i=0;i<n;i++){
+        vec1[m+i]=vec2[i];
+    }
+}
+
+//find repeating and missing number
+//remember to update int to long long based on input range
+//TC->O(N) SC->O(1);
+vector<int> findTwoElement(vector<int>& arr) {
+    int n=arr.size();
+    int standard_sum=(n*(n+1))/2;
+    int standard_sumsq=((n)*(n+1)*(2*n+1))/6;
+    int sum=0;
+    int sumsq=0;
+    for(int i=0;i<n;i++){
+        sum+=arr[i];
+        sumsq+=(arr[i]*arr[i]);
+    }
+    int double_minus_missing=sum-standard_sum;
+    int doublesq_minus_missingsq=sumsq-standard_sumsq;
+    int double_plus_missing=doublesq_minus_missingsq/double_minus_missing;
+    int doubletimes=(double_plus_missing+double_minus_missing)/2;
+    int missing=double_plus_missing-doubletimes;
+    return {doubletimes,missing};
+}
+
+//Count Inversions
+
+//Reverse Pairs
+
+//Maximum Product Subarray
+
 int main(){
     int n=5;
     for(auto it:pascaltriangle(n)){
