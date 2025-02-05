@@ -1,0 +1,49 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+class node{
+    public:
+        int val;
+        node* next;
+        node(int data){
+            val=data;
+            next=NULL;
+        }
+        node(){
+            val=0;
+            next=NULL;
+        }
+};
+
+//middle of linked list 
+//TC->O(n/2) SC->O(1);
+Node* middle(Node* head){
+    Node* front=head;
+    Node* back=head;
+    while(front && front->next){
+        front=front->next->next;
+        back=back->next;
+    }
+    return back;
+}
+
+//reverse single linked list
+Node* reversell(Node* head){
+    Node* curr=head;
+    Node* prev=NULL;
+    while(curr){
+        if(curr->next==NULL){
+            curr->next=prev;
+            break;
+        }
+        Node* tmp=curr->next;
+        curr->next=prev;
+        prev=curr;
+        curr=tmp;
+    }
+    return curr;
+}
+
+int main(){
+    
+}
