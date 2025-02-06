@@ -158,6 +158,56 @@ bool areanagram(string str1,string str2){
 
 //Rotate string - Given two strings s and goal, return true if and only if s can become goal after some number of shifts on s
 
+//sort characters by frequency
+//Given two strings s and goal, return true if and only if s can become goal after some number of shifts on s
+//eg- tree->eert 
+//Remember to use vec[i].second in final loop for ans string while choosing char ch and not i by mistake
+//TC->O(62+n+nlogn+n) SC->O(62+n(ans string))
+string frequencySort(string s) {
+    int n=s.size();
+    vector<pair<int,int>> vec(62,{0,-1});
+    for(int i=0;i<62;i++){
+        vec[i].second=i;
+    }
+    for(int i=0;i<n;i++){
+        if(s[i]>='a' && s[i]<='z') (vec[s[i]-'a'].first)++;
+        else if(s[i]>='A' && s[i]<='Z') (vec[(s[i]-'A')+26].first)++;
+        else (vec[s[i]-'0'+52].first)++;
+    }
+    sort(vec.rbegin(),vec.rend());
+    string ans="";
+    for(int i=0;i<62;i++){
+        if(vec[i].first==0) break;
+        char ch;
+        if(vec[i].second>=52){
+            ch='0'+(vec[i].second-52);
+        }
+        else if(vec[i].second>=26){
+            ch='A'+(vec[i].second-26);
+        }
+        else{
+            ch='a'+vec[i].second;
+        }
+        for(int j=0;j<vec[i].first;j++){
+            ans+=ch;
+        }
+    }
+    return ans;
+}
+
+//Maximum Nesting Depth of Paranthesis for valid Paranthesis string
+int maxdepthofnesting(string s){
+    int n=s.size();
+    int ans=0;
+    int open=0;
+    for(int i=0;i<n;i++){
+        if(s[i]=='(') open++;ans=max(open,ans);
+        if(s[i]==')') open--;
+    }
+    return ans;
+}
+
+
 int main(){
     string s;
     
