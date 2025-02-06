@@ -279,9 +279,113 @@ vector<int> findTwoElement(vector<int>& arr) {
     return {doubletimes,missing};
 }
 
-//Count Inversions
+//count inversions
+//arr[i] > arr[j] and i < j
+//inversion count indicates how far (or close) the array is from being sorted
+//intuition based on merge sorted
+//TC->O(nlogn) SC->O(n) for temp array in merge function
+void merge(vector<int> &vec,int start,int mid,int end,int &cnt){
+    int i=start;
+    int j=mid+1;
+    vector<int> temp;
+    while(i<=mid && j<=end){
+        if(vec[i]<=vec[j]){
+            temp.push_back(vec[i]);
+            i++;
+        }
+        else{
+            cnt+=(mid-i+1);
+            temp.push_back(vec[j]);
+            j++;
+        }
+    }
+    while(i<=mid){
+        temp.push_back(vec[i]);
+        i++;
+    }
+    while(j<=end){
+        temp.push_back(vec[j]);
+        j++;
+    }
+    int n=temp.size();
+    for(int k=0;k<n;k++){
+        vec[start+k]=temp[k];
+    }
+}
 
-//Reverse Pairs
+//REMEMBER to take vec by reference because we are modifying it
+void mergesort(vector<int> &vec,int start,int end,int &cnt){
+    if(start>=end) return;
+    int mid=start+(end-start)/2;
+    mergesort(vec,start,mid,cnt);
+    mergesort(vec,mid+1,end,cnt);
+    merge(vec,start,mid,end,cnt);
+}
+
+int count_inversions(vector<int> vec){
+    int n=vec.size();
+    int cnt=0;
+    mergesort(vec,0,n-1,cnt);
+    return cnt;
+}
+
+//SLIGHT CHANGE IN PREVIOUS case
+//now we want nums[i] > 2 * nums[j] for i<j
+//same TC and SC as in case of countinversions
+void merge(vector<int> &vec,int start,int mid,int end,int &cnt){
+    int i=start;
+    int j=mid+1;
+    vector<int> temp;
+    
+    for(int i=start;i<=mid;i++){
+        int js=j;
+        while(j<=end && ((long long)2*vec[j]<vec[i])){
+            j++;
+        }
+        cnt+=(j-(mid+1));
+    }
+    
+    i=start;
+    j=mid+1;
+    while(i<=mid && j<=end){
+        if(vec[i]<=vec[j]){
+            temp.push_back(vec[i]);
+            i++;
+        }
+        else{
+            temp.push_back(vec[j]);
+            j++;
+        }
+    }
+    while(i<=mid){
+        temp.push_back(vec[i]);
+        i++;
+    }
+    while(j<=end){
+        temp.push_back(vec[j]);
+        j++;
+    }
+    int n=temp.size();
+    for(int k=0;k<n;k++){
+        vec[start+k]=temp[k];
+    }
+}
+
+//REMEMBER to take vec by reference because we are modifying it
+void mergesort(vector<int> &vec,int start,int end,int &cnt){
+    if(start>=end) return;
+    int mid=start+(end-start)/2;
+    mergesort(vec,start,mid,cnt);
+    mergesort(vec,mid+1,end,cnt);
+    merge(vec,start,mid,end,cnt);
+}
+
+int reversePairs(vector<int>& arr) {
+    int cnt=0;
+    int n=arr.size();
+    mergesort(arr,0,n-1,cnt);
+    return cnt;
+}
 
 //Maximum Product Subarray
 
