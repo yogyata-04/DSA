@@ -388,7 +388,33 @@ int reversePairs(vector<int>& arr) {
 }
 
 //Maximum Product Subarray
-
+//Remember here we should take maxi as INT_MIN and not 0 because in case like [-1] answer will be -1 and not 0
+//also in case of 0, reinitialize prod as 1 and also update max(this is important for case like [-1,0,-1] here if we don't update max with 0 we will get -1 as answer which is wrong)
+int maxProduct(vector<int>& nums) {
+    int n=nums.size();
+    int maxi=INT_MIN;
+    int prod=1;
+    //calculate product from front
+    for(int i=0;i<n;i++){
+        if(nums[i]==0){maxi=max(maxi,0);prod=1;continue;}
+        prod*=nums[i];
+        maxi=max(maxi,prod);
+    }
+    prod=1;
+    //calculate product from back
+    for(int i=n-1;i>=0;i--){
+        if(nums[i]==0){maxi=max(maxi,0);prod=1;continue;}
+        prod*=nums[i];
+        maxi=max(maxi,prod);
+    }
+    //can also implement it this way
+    //for(int i=n-1;i>=0;i--){
+    //   prod*=nums[i];
+    //   maxi=max(maxi,prod);
+    //   if(nums[i]==0) prod=1;
+    //}
+    return maxi;
+}
 int main(){
     int n=5;
     for(auto it:pascaltriangle(n)){
