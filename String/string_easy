@@ -207,6 +207,36 @@ int maxdepthofnesting(string s){
     return ans;
 }
 
+//sum of beauty of all substrings (consisting of all lowercase alphabets)
+//take care of iterators properly
+//TC->O(n^2) SC->O(1)
+int beautysum(string str){
+    int n=str.size();
+    int ans=0;
+    for(int i=0;i<n;i++){
+        vector<int> (26,0);
+        int max_freq=0;
+        int min_freq=INT_MAX;
+        for(int j=i;j<n;j++){
+            vec[str[j]-'a']++;
+            max_freq=max(max_freq,vec[str[j]-'a']);
+            min_freq=vec[str[j]-'a'];
+            for(int k=0;k<26;k++){
+                if(vec[k]>=1) min_freq=min(min_freq,vec[k]);
+            }
+        }
+        ans+=(max_freq-min_freq);
+    }
+    return ans;
+}
+
+//Roman Number to Integer and vice versa
+
+//Implement Atoi
+
+//Count Number of Substrings
+
+//Longest Palindromic Substring[Do it without DP]
 
 int main(){
     string s;
