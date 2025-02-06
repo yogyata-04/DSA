@@ -1,0 +1,164 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+//******************************************STRINGS**********************************************
+//Remove outermost paranthesis
+//TC->O(n+n) SC->O(n)
+string removeouterpara(string str){
+    string ans;
+    int n=str.size();
+    int left=0;
+    int open=0;
+    int close=0;
+    for(int i=0;i<n;i++){
+        if(str[i]=='(') open++;
+        if(str[i]==')') close++;
+        if(open==close){
+            for(int j=left+1;j<i;j++){
+                ans+=str[j];
+            }
+            left=i+1;
+        }
+    }
+    return ans;
+}
+
+//Reverse words in a string
+//e.g.->Input s="the sky is blue" Output: "blue is sky the"
+//We have inbuilt stl function as well that can help us for converting string of several words as in e.g. to vector of words
+//TC->O(n) SC->O(no. of words + n(for ans string))
+vector<string> splitstring(string str){
+    vector<string> ans;
+    
+    //STL function - TC->O(n)
+    istringstream iss(str);  // Create a string stream ->O(1)
+    string word;
+    // Extract words from the stream and store them in the vector
+    while (iss >> word) {
+        ans.push_back(word);
+    }
+    
+    return ans;
+}
+
+string reverseWords(string s) {
+    vector<string> vec;
+    // int n=s.size();
+    // int i=0;
+    // while(i<n){
+    //     string temp="";
+    //     while(i<n && s[i]!=' '){
+    //         temp+=s[i];
+    //         i++;
+    //     }
+    //     if(temp.size()>0){
+    //         vec.push_back(temp);
+    //     }
+    //     i++;
+    // }
+    vec=splitstring(s);
+    int m=vec.size();
+    string ans="";
+    for(int i=m-1;i>0;i--){
+        ans+=vec[i];
+        ans+=' ';
+    }
+    ans+=vec[0];
+    return ans;
+}
+
+//for getting comma sepated value of any other character separated
+//TC->O(n)
+vector<string> splitCSV(const string& str) {
+    vector<string> result;
+    stringstream ss(str);  // Create a string stream
+    string word;
+
+    // Read values separated by commas
+    while (getline(ss, word, ',')) {
+        result.push_back(word);
+    }
+
+    return result;
+}
+
+//largest odd number in string
+//TC->O(N) SC->O(N)
+string largestodd(string str){
+    int n=str.size();
+    int pos=-1;
+    for(int i=n-1;i>=0;i--){
+        if((int)str[i]%2==1) {pos=i;break;}
+    }
+    string ans(str.begin(),str.begin()+pos+1);
+    return ans;
+}
+
+//longest Common Prefix for given vector of strings where, 1 <= strs.length <= 200; 0 <= strs[i].length <= 200
+//TC->O(n*(maximum string length))
+string longestCommonPrefix(vector<string>& strs) {
+    int n=strs.size();
+    int i=1;
+    string common=strs[0];
+    while(i<n){
+        string curr=strs[i];
+        //below line is important as when second string size is less than common string then common string will not be updated if they entirely match each other
+        //eg. - abc, ab ->here common string will still remain abc but we need ab
+        if(curr.size()<common.size()) common=common.substr(0,curr.size());
+        int len=min(curr.size(),common.size());
+        for(int j=0;j<len;j++){
+            if(common[j]!=curr[j]){
+                common=common.substr(0,j);
+                break;
+            }
+        }
+        i++;
+    }
+    return common;
+}
+
+//find if given two strings (s,t) are isomorphic, i.e., if the characters in s can be replaced to get t
+//TC->O(n) SC->O(2*n)
+//remember s[i] should be related to same t[i] and t[i] should also be related to only one corresponding s[i]
+//eg. in bata and atat, it is not isomorphic as b is related to a and t is also related to a, i.e for string t 'a' is related to b and t both
+bool isIsomorphic(string s, string t) {
+    map<char,char> mp1,mp2;
+    int n=s.size();
+    int m=t.size();
+    if(n!=m) return false;
+    for(int i=0;i<n;i++){
+        if(mp1.find(s[i])==mp1.end()){
+            mp1[s[i]]=t[i]; 
+        }
+        if(mp2.find(t[i])==mp2.end()){
+            mp2[t[i]]=s[i];
+        } 
+        if(mp1[s[i]]!=t[i] || mp2[t[i]]!=s[i]) return false;
+    }
+    return true;
+}
+
+//check is two strings are anagram of each other
+//TC->O(n) SC->O(2*26)
+bool areanagram(string str1,string str2){
+    int n=str1.size();
+    int m=str2.size();
+    if(n!=m) return false;
+    vector<int> vec1(26,0);
+    vector<int> vec2(26,0);
+    for(int i=0;i<n;i++){
+        vec1[str1[i]-'a']++;
+        vec2[str2[i]-'a']++;
+    }
+    for(int i=0;i<26;i++){
+        if(vec1[i]!=vec2[i]) return false;
+    }
+    return true;
+}
+
+//Rotate string - Given two strings s and goal, return true if and only if s can become goal after some number of shifts on s
+
+int main(){
+    string s;
+    
+}
