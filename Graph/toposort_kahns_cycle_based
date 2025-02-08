@@ -1,0 +1,179 @@
+#include<bits/stdc++.h>
+using namespace std;
+//topo sort- scheduling for directed acyclic graph , if graph is cyclic we are simply returning empty vector{}
+bool dfs(int i,vector<vector<int>> &adj,vector<int> &vis,vector<int> &ans,vector<int> pathvis){
+    vis[i]=1;
+    pathvis[i]=1; //for cycle detection
+    for(auto it:adj[i]){
+        if(pathvis[it]){
+            return false;
+        }
+        if(!vis[it]){
+            if(!dfs(it,adj,vis,ans,pathvis)) return false;
+        }
+    }
+    ans.push_back(i);
+    pathvis[i]=0;
+    return true;
+}
+vector<int> topologicalSort(vector<vector<int>>& adj){
+    int n=adj.size();
+    vector<int> ans;
+    vector<int> vis(n,0);
+    vector<int> pathvis(n,0);
+    for(int i=0;i<n;i++){
+        if(!vis[i]){
+            if(!dfs(i,adj,vis,ans,pathvis)) return {};
+        }
+    }
+    reverse(ans.begin(),ans.end());
+    return ans;
+}
+
+//cycle detection in directed graph
+//using dfs
+//TC->O(V+E) SC->O(2V+V(recursion stack space))
+bool dfs(int i,vector<int> &vis,vector<int> &ans,vector<vector<int>> &adj,vector<int> pathvis){
+    vis[i]=1;
+    pathvis[i]=1;
+    for(auto it:adj[i]){
+        if(!vis[it]){
+            if(dfs(it,vis,ans,adj,pathvis)){
+                return true;
+            }
+        }
+        else if(pathvis[it]) return true;
+    }
+    pathvis[i]=0;
+    return false;
+}
+
+bool isCyclic(int V, vector<vector<int>> adj) {
+    vector<int> ans;
+    vector<int> pathvis(V,0);
+    vector<int> vis(V,0);
+    
+    for(int i=0;i<V;i++){
+        if(!vis[i]){
+            if(dfs(i,vis,ans,adj,pathvis)) return true;
+        }
+    }
+    return false;
+}
+//using bfs
+bool isCyclic(int V, vector<vector<int>> adj) {
+    vector<int> indegree(V);
+    for(int i=0;i<V;i++){
+        for(auto it:adj[i]){
+            indegree[it]++;
+        }
+    }
+    queue<int> q;
+    for(int i=0;i<V;i++){
+        if(indegree[i]==0){
+            q.push(i);
+        }
+    }
+    int cnt=0; //count elements in ans vector(imaginary) no need currently as we don't have to give order of scheduling
+    while(!q.empty()){
+        int front=q.front();
+        q.pop();
+        for(auto it:adj[front]){
+            indegree[it]--;
+            if(indegree[it]==0){
+                q.push(it);
+            }
+        }
+        cnt++;
+    }
+    if(cnt!=V) return true;
+    return false;
+}
+
+//scheduling problem done in bfs dfs part 
+
+//find eventual safe states
+//TC->O(n(finding terminal node)+(n+E)(creating reverse graph)+E(bfs)+nlogn(sorting))->(n+n+E+E+nlogn)
+//SC->O(E(reverse graph)+n(queue)+n(indegree)+n(ans))
+vector<int> eventualSafeNodes(vector<vector<int>>& graph) {
+    //reverse graph
+    int n=graph.size();
+    queue<int> q;
+    //find terminal nodes
+    for(int i=0;i<n;i++){
+        if(graph[i].size()==0) q.push(i);
+    }
+    vector<int> ans;
+    vector<int> indegree(n,0);
+    vector<vector<int>> rgraph(n);
+    for(int i=0;i<n;i++){
+        for(auto it:graph[i]){
+            rgraph[it].push_back(i);
+            indegree[i]++;
+        }
+    }
+    while(!q.empty()){
+        int front=q.front();
+        q.pop();
+        ans.push_back(front);
+        for(auto it:rgraph[front]){
+            indegree[it]--;
+            if(indegree[it]==0){
+                q.push(it);
+            }
+        }
+    }
+    sort(ans.begin(),ans.end());
+    return ans;
+}
+
+//alien dictionary(directed graph problem)
+//TC->O(n*maxstringlen*logn+k+E) SC->O(E(adj)+k(map)+k(queue))
+// Conditions in which such dictionary is not possible are-
+//  1. when a larger string like "abcd" comes before smaller similar string like "abc" or "ab".
+//  2. when there is cycle formed.
+vector<char> alienorder(vector<string> vec){
+    int n=vec.size();
+    map<int,int> mp; //this will store indegree for all nodes
+    vector<vector<int>> adj(26);
+    for(int i=0;i<n-1;i++){
+        int m=vec[i].size();
+        int k=vec[i+1].size();
+        int l=min(m,k);
+        for(int j=0;j<l;j++){
+            if(vec[i][j]!=vec[i+1][j]){
+                adj[vec[i][j]-'a'].push_back(vec[i+1][j]-'a');
+                mp[vec[i+1][j]-'a']++;
+                if(mp.find(vec[i][j]-'a')==mp.end()) mp[vec[i][j]-'a']=0;
+                break;
+            }
+        }
+    }
+    queue<int> q;
+    for(auto it:mp){
+        if(it.second==0){
+            q.push(it.first);
+        }
+    }
+    vector<char> ans;
+    while(!q.empty()){
+        int front=q.front();
+        q.pop();
+        ans.push_back(front+'a');
+        for(auto it:adj[front]){
+            mp[it]--;
+            if(mp[it]==0){
+                q.push(it);
+            }
+        }
+    }
+    return ans;
+}
+
+int main(){
+    vector<string> vec={"baa","abcd","abca","cab","cad"};
+    vector<char> ans=alienorder(vec);
+    for(auto it:ans){
+        cout<<it<<" ";
+    }
+}
