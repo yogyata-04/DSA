@@ -2,6 +2,7 @@
 using namespace std;
 
 //shortest path in undirected graph with unit weights
+//TC->O(V+2*E)(BFS) SC->O(V^2(queue)+V(dist array)+V^2(path array))
 vector<int> spath_undirected(vector<vector<int>> adj){
     int n=adj.size();
     queue<pair<int,vector<int>>> q; //node, path 
