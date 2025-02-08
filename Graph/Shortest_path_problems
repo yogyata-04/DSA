@@ -1,0 +1,47 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+//shortest path in undirected graph with unit weights
+vector<int> spath_undirected(vector<vector<int>> adj){
+    int n=adj.size();
+    queue<pair<int,vector<int>>> q; //node, path 
+    q.push({0,{0}});
+    vector<int> dist(n,INT_MAX);
+    vector<vector<int>> vec(n);
+    dist[0]=0;
+    int dis=1;
+    while(!q.empty()){
+        int m=q.size();
+        while(m--){
+            auto front=q.front();
+            q.pop();
+            int node=front.first;
+            vector<int> temp=front.second;
+            for(auto it:adj[node]){
+                if(dist[it]==INT_MAX){
+                    dist[it]=dis;
+                    temp.push_back(it);
+                    q.push({it,temp});
+                    vec[it]=temp;
+                    temp.pop_back();
+                }
+            }
+        }
+        dis++;
+    }
+    for(auto it:vec){
+        for(auto i:it){
+            cout<<i<<" ";
+        }
+        cout<<endl;
+    }
+    return dist;
+}
+
+int main(){
+    vector<vector<int>> vec={{1,3},{0,2,3},{1,6},{0,4},{3,5},{4,6},{2,5,7,8},{6,8},{6,7}};
+    vector<int> ans=spath_undirected(vec);
+    for(auto it:ans){
+        cout<<it<<" ";
+    }
+}
