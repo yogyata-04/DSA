@@ -39,6 +39,104 @@ vector<int> spath_undirected(vector<vector<int>> adj){
     return dist;
 }
 
+#include<bits/stdc++.h>
+using namespace std;
+
+//shortest path in directed acyclic graph (wighted)
+//to decide the order of nodes and starting node we need topo sorted order
+//I am using dfs here we can also use bfs
+//Here we are deciding source node, but there might be cases where we are given source node (in such case there might be possibility of not reaching certain nodes)
+//TC->O(V(finding indegree)+V(adding source nodes in queue)+(V+E)(toposort order)+(V+E)(updating distance array))
+//SC->O(V(indegree)+V(queue)+V(order)+V(dist))
+vector<int> spath_directedacyclic(vector<vector<pair<int,int>>> adj){
+    int n=adj.size();
+    vector<int> indegree(n,0);
+    for(int i=0;i<n;i++){
+        for(auto it:adj[i]){
+            indegree[it.first]++;
+        }
+    }
+    queue<int> q;
+    for(int i=0;i<n;i++){
+        if(indegree[i]==0){
+            q.push(i);
+        }
+    }
+    vector<int> order;
+    while(!q.empty()){
+        int front=q.front();
+        q.pop();
+        order.push_back(front);
+        for(auto it:adj[front]){
+            indegree[it.first]--;
+            if(indegree[it.first]==0) q.push(it.first);
+        }
+    }
+    
+    vector<int> dist(n,INT_MAX);
+    dist[order[0]]=0;
+    for(auto it:order){
+        for(auto i:adj[it]){
+            if((long long)dist[i.first]>(long long)dist[it]+(long long)i.second) dist[i.first]=dist[it]+i.second;
+        }
+    }
+    return dist;
+}
+
+//if non weighted direccted acyclic graph
+vector<int> spath_directedacyclic1(vector<vector<int>> adj){
+    int n=adj.size();
+    vector<int> indegree(n,0);
+    for(int i=0;i<n;i++){
+        for(auto it:adj[i]){
+            indegree[it]++;
+        }
+    }
+    queue<int> q;
+    for(int i=0;i<n;i++){
+        if(indegree[i]==0){
+            q.push(i);
+        }
+    }
+    vector<int> order;
+    while(!q.empty()){
+        int front=q.front();
+        q.pop();
+        order.push_back(front);
+        for(auto it:adj[front]){
+            indegree[it]--;
+            if(indegree[it]==0) q.push(it);
+        }
+    }
+    
+    vector<int> dist(n,INT_MAX);
+    dist[order[0]]=0;
+    for(auto it:order){
+        for(auto i:adj[it]){
+            if(dist[i]==INT_MAX) dist[i]=dist[it]+1;
+        }
+    }
+    return dist;
+}
+
+//Remember whenever it's given that we don't have negative weight edges and we have to find shortest path,
+//it is mp question of Dijkstra's algorithm
+//not applicable for negative weights
+//applicable for cyclic graphs
+//Shortest path for graph (can work for cyclic graph as well, but does not work for negative weights)
+
+
+int main(){
+    vector<vector<pair<int,int>>> adj={{{1,2}},{{3,1}},{{3,3}},{},{{0,3},{2,1}},{{4,1}},{{4,2},{5,3}}};
+    vector<vector<pair<int,int>>> adj1={{{1,2},{4,1}},{{2,3}},{{3,6}},{},{{5,4},{2,2}},{{3,1}}};
+    vector<vector<int>> adj2={{1},{3},{3},{},{0,2},{4},{4,5}};
+    
+    vector<int> dist=spath_directedacyclic1(adj2);
+    for(auto it:dist){
+        cout<<it<<" ";
+    }
+}
+
 int main(){
     vector<vector<int>> vec={{1,3},{0,2,3},{1,6},{0,4},{3,5},{4,6},{2,5,7,8},{6,8},{6,7}};
     vector<int> ans=spath_undirected(vec);
