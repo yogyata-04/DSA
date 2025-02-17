@@ -508,23 +508,23 @@ bool isBipartite(vector<vector<int>>& graph) {
 //remember the condition if vis[it] && it!=parent is incorrect in case of directed graph because otherwise unnecessary cycles will be detected which is not required
 
 //need to optimise it using bfs
-bool dfs(int i,vector<vector<int>> p,vector<int> &vis,vector<int> &ans,vector<vector<int>> adj,vector<int> pathvis){
+bool dfs(int i,vector<int> &vis,vector<int> &ans,vector<vector<int>> adj,vector<int> pathvis){
     vis[i]=1;
     pathvis[i]=1;
     //don't insert element here as it will be preorder
     // ans.push_back(i);
     for(auto it:adj[i]){
         if(!vis[it]){
-            if(!dfs(it,p,vis,ans,adj,pathvis)){
-                return false;
+            //detecting cycle as well on the way
+            if(dfs(it,vis,ans,adj,pathvis)){
+                return true;
             }
         }
-        else if(pathvis[it]) return false;
+        else if(pathvis[it]) return true;
     }
     //insert here as in this case we need postorder and last element will have no dependencies so we can push it
     ans.push_back(i);
-    pathvis[i]=0;
-    return true;
+    return false;
 }
 
 vector<int> findOrder(int n, vector<vector<int>>& p) {
@@ -538,7 +538,7 @@ vector<int> findOrder(int n, vector<vector<int>>& p) {
     vector<int> vis(n,0);
     for(int i=0;i<n;i++){
         if(!vis[i]){
-            if(!dfs(i,p,vis,ans,adj,pathvis)) return {};
+            if(dfs(i,vis,ans,adj,pathvis)) return {};
         }
     }
     //important 
