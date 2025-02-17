@@ -82,7 +82,7 @@ int findCircleNum(vector<vector<int>>& vec) {
 
 //rotten oranges
 //BFS traversal
-//TC->O(4*m*n) +SC(n*n+n*n)
+//TC->O(4*m*n(bfs)+n*m(counting fresh and pushing rot)) +SC(n*n+n*n)
 int orangesRotting(vector<vector<int>>& grid) {
     int n=grid.size();
     int m=grid[0].size();
