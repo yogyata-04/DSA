@@ -93,6 +93,7 @@ bool isCyclic(int V, vector<vector<int>> adj) {
 //scheduling problem done in bfs dfs part 
 
 //find eventual safe states
+//If we closely observe, all possible paths starting from a node are going to end at some terminal node unless there exists a cycle and the paths return back to themselves.
 //TC->O(n(finding terminal node)+(n+E)(creating reverse graph)+E(bfs)+nlogn(sorting))->(n+n+E+E+nlogn)
 //SC->O(E(reverse graph)+n(queue)+n(indegree)+n(ans))
 vector<int> eventualSafeNodes(vector<vector<int>>& graph) {
@@ -127,11 +128,12 @@ vector<int> eventualSafeNodes(vector<vector<int>>& graph) {
     return ans;
 }
 
-//alien dictionary(directed graph problem)
-//TC->O(n*maxstringlen*logn+k+E) SC->O(E(adj)+k(map)+k(queue))
+// alien dictionary(directed graph problem)
+// TC->O(n*maxstringlen*logn+k+E) SC->O(E(adj)+k(map)+k(queue))
 // Conditions in which such dictionary is not possible are-
-//  1. when a larger string like "abcd" comes before smaller similar string like "abc" or "ab".
-//  2. when there is cycle formed.
+// 1. when a larger string like "abcd" comes before smaller similar string like "abc" or "ab".
+// 2. when there is cycle formed.
+//Remember we can't store indegree in vector, else we will have to initialise with -1 and check at every point while iterating
 vector<char> alienorder(vector<string> vec){
     int n=vec.size();
     map<int,int> mp; //this will store indegree for all nodes
@@ -144,6 +146,7 @@ vector<char> alienorder(vector<string> vec){
             if(vec[i][j]!=vec[i+1][j]){
                 adj[vec[i][j]-'a'].push_back(vec[i+1][j]-'a');
                 mp[vec[i+1][j]-'a']++;
+                //we need to put 0 indegree for parent, if parent is not present already in map data structure
                 if(mp.find(vec[i][j]-'a')==mp.end()) mp[vec[i][j]-'a']=0;
                 break;
             }
