@@ -212,6 +212,7 @@ vector<vector<int>> floodFill(vector<vector<int>>& image, int sr, int sc, int co
 
 //BFS Approach
 //TC->O(2*E+N(connected components case)) SC->O(n+n)
+//always remember the case of components in graph in such cases
 bool isCycle(vector<vector<int>>& adj) {
     int n=adj.size();
     vector<int> vis(n,0);
@@ -253,6 +254,7 @@ bool isCycle(vector<vector<int>>& adj) {
 }
 
 //dfs Approach
+//we don't need pathvis for undirected graph case while finding if cycle is present
 //TC->O(n+2*e) SC->O(n+n(recursion stack space))
 bool dfs(int node,int parent, vector<vector<int>> &adj,vector<int> &vis){
     vis[node]=1;
