@@ -317,7 +317,7 @@ vector<vector<int>> updateMatrix(vector<vector<int>>& mat) {
 
 //Surrounded regions
 //bfs approach
-//TC->O(n+m+4*n*m) SC->O(n*m(vis array)+n*m(queue))
+//TC->O(n+m+4*n*m+n*m) SC->O(n*m(vis array)+n*m(queue))
 void solve(vector<vector<char>>& board) {
     int n=board.size();
     int m=board[0].size();
@@ -373,7 +373,7 @@ void solve(vector<vector<char>>& board) {
     }
 }
 //dfs approach
-//TC->O(n+m+4*n*m) SC->O(n*m(vis array)+n*m(recursion stack space))
+//TC->O(n+m+4*n*m+n*m) SC->O(n*m(vis array)+n*m(recursion stack space))
 void dfs(int x,int y,vector<vector<char>> &board, vector<vector<int>> &vis){
     int n=board.size();
     int m=board[0].size();
@@ -423,7 +423,7 @@ void solve(vector<vector<char>>& board) {
 //Bipartite graph (here we are also considering case of connected components)
 //It's coloring approach and checking if already visited node follows criteria of bipartite, if no, return false
 //bfs or dfs both will work
-//TC->O(n+2e) SC->O(n+n) y=using bfs
+//TC->O(n+2e+n(connected components loop)) SC->O(n(vis)+n(queue)) y=using bfs
 bool solve(int i,vector<vector<int>> &graph,vector<int> &vis){
     int n=graph.size();
     queue<int> q; //store color of node
@@ -460,7 +460,7 @@ bool isBipartite(vector<vector<int>>& graph) {
     return true;
 }
 //using dfs
-//TC->O(n+2e) SC->O(n+n)
+//TC->O(n+2e+n(connected components)) SC->O(n(vis)+n(recursion stack))
 bool dfs(int i,vector<vector<int>> &graph,vector<int> &vis,int col){
     vis[i]=col;
     for(auto it:graph[i]){
@@ -504,6 +504,8 @@ bool isBipartite(vector<vector<int>>& graph) {
 //recursive function call. This copying operation has a time complexity of O(n) for each call where n is the size of the vector.
 //When you pass parameters by reference (&), C++ does not create a copy. Instead, it provides access to the original memory location, 
 //making the function calls efficient.
+
+//remember the condition if vis[it] && it!=parent is incorrect in case of directed graph because otherwise unnecessary cycles will be detected which is not required
 
 //need to optimise it using bfs
 bool dfs(int i,vector<vector<int>> p,vector<int> &vis,vector<int> &ans,vector<vector<int>> adj,vector<int> pathvis){
@@ -617,6 +619,7 @@ int ladderLength(string beginWord, string endWord, vector<string>& wordlist) {
 
 //Word ladder 2
 //Remember here not to remove word from set inside k-- loop as other paths can use that same word at that level
+//Also keep track of words to be erased from set at each level
 vector<vector<string>> findLadders(string beginWord, string endWord, vector<string>& wordlist) {
     set<string> st;
     vector<vector<string>> ans;
