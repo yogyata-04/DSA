@@ -223,10 +223,195 @@ int solve(int ind,int n,vector<int> &prices,int op,vector<vector<vector<int>>> &
     }
     return dp[cnt][op][ind]=profit;
 }
-
+int solve(int ind,int n,vector<int> &prices,int op,vector<vector<int>> &dp,int cnt){
+    if(cnt<=0) return 0;
+    if(ind==n) return 0;
+    //we will buy/not buy
+    if(dp[cnt][ind]!=-1) return dp[cnt][ind];
+    int profit=0;
+    if(cnt%2==0){
+        //buy or not buy
+        profit=max(solve(ind+1,n,prices,!op,dp,cnt-1)-prices[ind],0+solve(ind+1,n,prices,op,dp,cnt));
+    }
+    else {
+        //sell or not sell
+        //incrementing count when two transactions completed
+        profit=max(solve(ind+1,n,prices,!op,dp,cnt-1)+prices[ind],0+solve(ind+1,n,prices,op,dp,cnt));
+    }
+    return dp[cnt][ind]=profit;
+}
 int maxProfit(int k,vector<int>& prices) {
     int n=prices.size();
     vector<vector<vector<int>>> dp(k+1,vector<vector<int>>(2,vector<int>(n,-1)));
     return solve(0,n,prices,1,dp,k);
 }
 //tabulation
+int maxProfit(int k,vector<int>& prices) {
+    int n=prices.size();
+    vector<vector<int>> dp(n+1,vector<int>(2*k+1,0));
+    //return solve(0,n,prices,0,dp,2*k);
+    for(int i=n-1;i>=0;i--){
+        for(int cnt=0;cnt<2*k;cnt++){
+            int profit=0;
+            if(cnt%2==0){
+                profit=max(dp[i+1][cnt+1]-prices[i],dp[i+1][cnt]);
+            }
+            else{
+                profit=max(dp[i+1][cnt+1]+prices[i],dp[i+1][cnt]);
+            }
+            dp[i][cnt]=profit;
+        }
+    }
+    return dp[0][0];
+}
+//space optimization
+int maxProfit(int k,vector<int>& prices) {
+    int n=prices.size();
+    vector<int> dp(2*k+1,0);
+    //return solve(0,n,prices,0,dp,2*k);
+    for(int i=n-1;i>=0;i--){
+        for(int cnt=0;cnt<2*k;cnt++){
+            int profit=0;
+            if(cnt%2==0){
+                profit=max(dp[cnt+1]-prices[i],dp[cnt]);
+            }
+            else{
+                profit=max(dp[cnt+1]+prices[i],dp[cnt]);
+            }
+            dp[cnt]=profit;
+        }
+    }
+    return dp[0];
+}
+
+//Buy and sell stocks with cooldown
+//memoization
+int solve(int ind,int n,vector<int> &prices,int op,vector<vector<int>> &dp){
+    if(ind>=n) return 0;
+    //we will buy/not buy
+    if(dp[op][ind]!=-1) return dp[op][ind];
+    int profit=INT_MIN;
+    if(op==1){
+        profit=max(solve(ind+1,n,prices,!op,dp)-prices[ind],0+solve(ind+1,n,prices,op,dp));
+    }
+    else {
+        profit=max(solve(ind+2,n,prices,!op,dp)+prices[ind],0+solve(ind+1,n,prices,op,dp));
+    }
+    return dp[op][ind]=profit;
+}
+int maxProfit(vector<int>& prices) {
+    int n=prices.size();
+    vector<vector<int>> dp(2,vector<int>(n,-1));
+    return solve(0,n,prices,1,dp);
+}
+//tabulation
+int maxProfit(vector<int>& prices) {
+    int n=prices.size();
+    vector<vector<int>> dp(2,vector<int>(n+1,0));
+    //return solve(0,n,prices,1,dp);
+    for(int ind=n-1;ind>=0;ind--){
+        for(int buy=0;buy<=1;buy++){
+            int profit=0;
+            if(buy){
+                profit=max(dp[!buy][ind+1]-prices[ind],0+dp[buy][ind+1]);
+            }
+            else{
+                //after selling we can't buy on next index
+                int next=0;
+                if(ind+1<n) next=dp[!buy][ind+2];
+                profit=max(next+prices[ind],0+dp[buy][ind+1]);
+            }
+            dp[buy][ind]=profit;
+        }
+    }
+    return dp[1][0];
+}
+//space optimization
+int maxProfit(vector<int>& prices) {
+    int n=prices.size();
+    vector<vector<int>> dp(2,vector<int>(n+1,0));
+    //return solve(0,n,prices,1,dp);
+    //we need 3 cols
+    vector<int> curr(2,0);
+    vector<int> front1(2,0);
+    vector<int> front2(2,0);
+    for(int ind=n-1;ind>=0;ind--){
+        for(int buy=0;buy<=1;buy++){
+            int profit=0;
+            if(buy){
+                profit=max(front1[!buy]-prices[ind],0+front1[buy]);
+            }
+            else{
+                //after selling we can't buy on next index
+                int next=0;
+                if(ind+2<n) next=front2[!buy];
+                profit=max(next+prices[ind],0+front1[buy]);
+            }
+            curr[buy]=profit;
+        }
+        front2=front1;
+        front1=curr;
+    }
+    return curr[1];
+}
+
+//buy and sell stock with transaction fee
+//memoization
+int solve(int ind,int n,vector<int> &prices,int op,vector<vector<int>> &dp,int fee){
+    if(ind<0) return 0;
+    //we will buy/not buy
+    if(dp[op][ind]!=-1) return dp[op][ind];
+    int profit=INT_MIN;
+    if(op==1){
+        profit=max(solve(ind+1,n,prices,!op,dp,fee)-prices[ind],0+solve(ind+1,n,prices,op,dp,fee));
+    }
+    else {
+        profit=max(solve(ind+1,n,prices,!op,dp,fee)+prices[ind]-fee,0+solve(ind+1,n,prices,op,dp,fee));
+    }
+    return dp[op][ind]=profit;
+}
+int maxProfit(vector<int>& prices,int fee) {
+    int n=prices.size();
+    vector<vector<int>> dp(2,vector<int>(n,-1));
+    return solve(0,n-1,prices,1,dp,fee);
+}
+//tabulation
+int maxProfit(vector<int>& prices,int fee) {
+    int n=prices.size();
+    vector<vector<int>> dp(2,vector<int>(n+1,-1));
+    //base condition - any operation on out of bound index will be invalid so we will have 0 profit
+    dp[0][n]=0;
+    dp[1][n]=0;
+    for(int ind=n-1;ind>=0;ind--){
+        for(int buy=0;buy<=1;buy++){
+            int profit=0;
+            if(buy){
+                profit=max(dp[!buy][ind+1]-prices[ind],0+dp[buy][ind+1]);
+            }
+            else{
+                profit=max(dp[!buy][ind+1]+prices[ind]-fee,0+dp[buy][ind+1]);
+            }
+            dp[buy][ind]=profit;
+        }
+    }
+    return dp[1][0];
+}
+//space optimization
+int maxProfit(vector<int>& prices,int fee) {
+    int n=prices.size();
+    vector<int> dp(2,0);
+    //base condition - any operation on out of bound index will be invalid so we will have 0 profit
+    for(int ind=n-1;ind>=0;ind--){
+        for(int buy=0;buy<=1;buy++){
+            int profit=0;
+            if(buy){
+                profit=max(dp[!buy]-prices[ind],0+dp[buy]);
+            }
+            else{
+                profit=max(dp[!buy]+prices[ind]-fee,0+dp[buy]);
+            }
+            dp[buy]=profit;
+        }
+    }
+    return dp[1];
+}
