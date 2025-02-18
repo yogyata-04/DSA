@@ -165,6 +165,38 @@ int rob(vector<int>& nums) {
     ans=max(ans,ans2);
     return ans;
 }
+//memoization (2 times function call)
+//remember the edge case when only one element in array
+int solve(int index, vector<int> nums, vector<int> &dp){
+    if(index==0) {
+        return dp[0]=max(0,nums[0]);
+    }
+    if(index<0) return 0;
+    if(dp[index]!=-1) return dp[index];
+    //take
+    int take=solve(index-2,nums,dp)+nums[index];
+    //not take
+    int nottake=solve(index-1,nums,dp);
+    return dp[index]=max(take,nottake);
+}
+int rob(vector<int>& nums) {
+    int n=nums.size();
+    
+    //EDGE CASE
+    if(n==1) return nums[0];
+    
+    vector<int> dp(n,-1);
+    int ans1=solve(n-2,nums,dp);
+    vector<int> dp2(n,-1);
+    //need to handle edge case when only one element
+    // int temp=nums[0];
+    // nums[0]=INT_MIN;
+    vector<int> vec(nums.begin()+1,nums.end());
+    int ans2=solve(n-2,vec,dp2);
+    // nums[0]=temp;
+    cout<<ans1<<" "<<ans2;
+    return max(ans1,ans2);
+}
 
 int main(){
     
