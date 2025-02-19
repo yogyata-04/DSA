@@ -2,7 +2,55 @@
 using namespace std;
 
 //shortest path in undirected graph with unit weights
-//TC->O(V+2*E)(BFS) SC->O(V^2(queue)+V(dist array)+V^2(path array))
+//TC->O(n+2*E(bfs)+n(backtracking shortest distance)) SC->O(n(queue)+n(parent vector)+n(distance vector)+n(ans vector))
+#include<bits/stdc++.h>
+using namespace std;
+vector<int> shortestpath_undirectedgraph(vector<vector<int>> adj,int src,int des){
+    int n=adj.size();
+    queue<pair<int,int>> q;//node,dist
+    vector<int> ans;
+    //storing parents to trace back path for any destination - we could have also created vector<vector<int>> for every destination node from given source
+    vector<int> par(n,-1);
+    vector<int> dis(n,INT_MAX);
+    q.push({src,0});
+    while(!q.empty()){
+        auto front=q.front();
+        int node=front.first;
+        int dist=front.second;
+        q.pop();
+        for(auto it:adj[node]){
+            if(dis[it]==INT_MAX){
+                dis[it]=dist+1;
+                par[it]=node;
+                q.push({it,dis[it]});
+            }
+        }
+    }
+    for(auto it:par){
+        cout<<it<<" ";
+    }
+    cout<<endl;
+    //tracing back shortest path
+    int node=des;
+    while(par[node]!=-1){
+        ans.push_back(node);
+        node=par[node];
+    }
+    
+    if(node!=src) return {};
+    ans.push_back(node);
+    reverse(ans.begin(),ans.end());
+    return ans;
+}
+
+int main(){
+    vector<vector<int>> adj={{1,3},{2},{6},{4},{5},{6},{7,8},{6,8},{6,7}};
+    vector<int> ans=shortestpath_undirectedgraph(adj,0,5);
+    for(auto it:ans){
+        cout<<it<<" ";
+    }
+}
+//TC->O(V+2*E)(BFS) SC->O(V*2(queue)+V(dist array)+V*2(path array))
 vector<int> spath_undirected(vector<vector<int>> adj){
     int n=adj.size();
     queue<pair<int,vector<int>>> q; //node, path 
@@ -41,8 +89,7 @@ vector<int> spath_undirected(vector<vector<int>> adj){
 
 #include<bits/stdc++.h>
 using namespace std;
-
-//shortest path in directed acyclic graph (wighted)
+//shortest path in directed acyclic graph (weighted)
 //to decide the order of nodes and starting node we need topo sorted order
 //I am using dfs here we can also use bfs
 //Here we are deciding source node, but there might be cases where we are given source node (in such case there might be possibility of not reaching certain nodes)
