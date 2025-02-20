@@ -306,12 +306,16 @@ vector<int> rightview(Node* root){
     return ans;
 }
 //optimised solution (using dfs)
+//cleaner code 
+//TC->O(N) SC->O(height)
 void dfs(Node* root,vector<int> &ans,int level){
     if(root==NULL) return;
     if(level==ans.size()) ans.push_back(root->data);
     dfs(root->right,ans,level+1);
     dfs(root->left,ans,level+1);
 }
+//for right side view we do Root then right then left
+//For left side view we will do Root then left then right
 
 //check if tree is symmetric about root vertical, i.e., line passing through root should act as mirror
 //TC->O(N) SC->O(height)
