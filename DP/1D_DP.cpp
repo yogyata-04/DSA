@@ -5,7 +5,7 @@ using namespace std;
 
 //climbing stairs
 //if no memoization then TC->O(2^n)
-//dp solution -TC->O(2*n) SC->O(n+n(recursion stack space))
+//dp solution -TC->O(n) SC->O(n+n(recursion stack space))
 int solve(int n,vector<int> &dp){
     if(n<=1) return dp[n]=1;
     if(dp[n]!=-1) return dp[n];
