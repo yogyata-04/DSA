@@ -144,6 +144,85 @@ int uniquePathsWithObstacles(vector<vector<int>>& obstacleGrid) {
     int temp=solve(m-1,n-1,dp,obstacleGrid);
     return dp[m-1][n-1];
 }
+//tabulation
+int uniquePathsWithObstacles(vector<vector<int>>& obstacleGrid) {
+    int m=obstacleGrid.size();
+    int n=obstacleGrid[0].size();
+    vector<vector<int>> dp(m,vector<int> (n,0));
+    int obstacle=0;
+    //until and unless an onstacle comes each cell in first row can be reached by 1 way
+    //similarly for first column
+    //so, let's update the base case
+    for(int i=0;i<n;i++){
+        if(obstacleGrid[0][i]==1){
+            obstacle=1;
+        }
+        if(obstacle){
+            dp[0][i]=0;
+        }
+        else{
+            dp[0][i]=1;
+        }
+    }
+    //now for first column
+    obstacle=0;
+    for(int i=0;i<m;i++){
+        if(obstacleGrid[i][0]==1){
+            obstacle=1;
+        }
+        if(obstacle){
+            dp[i][0]=0;
+        }
+        else{
+            dp[i][0]=1;
+        }
+    }
+    for(int i=1;i<m;i++){
+        for(int j=1;j<n;j++){
+            //remember this condition should also be checked
+            if(obstacleGrid[i][j]==1){
+                dp[i][j]=0;
+                continue;
+            }
+            dp[i][j]=dp[i-1][j]+dp[i][j-1];
+        }
+    }
+    return dp[m-1][n-1];
+}
+//space optimization
+//always remember to have col range from 0 to n and not 1 to n as in previous problem because here it is not necessary that dp[0][0]=dp[1][0] which was true in previous case always which is why we iterated from j=1 and not j=0
+int uniquePathsWithObstacles(vector<vector<int>>& obstacleGrid) {
+    int m=obstacleGrid.size();
+    int n=obstacleGrid[0].size();
+    vector<int> dp(n,0);
+    int obstacle=0;
+    //until and unless an onstacle comes each cell in first row can be reached by 1 way
+    //similarly for first column
+    //so, let's update the base case
+    for(int i=0;i<n;i++){
+        if(obstacleGrid[0][i]==1){
+            obstacle=1;
+        }
+        if(obstacle){
+            dp[i]=0;
+        }
+        else{
+            dp[i]=1;
+        }
+    }
+    for(int i=1;i<m;i++){
+        for(int j=0;j<n;j++){
+            //remember this condition should also be checked
+            if(obstacleGrid[i][j]==1){
+                dp[j]=0;
+                continue;
+            }
+            dp[j]=dp[j];
+            if(j-1>=0) dp[j]+=dp[j-1];
+        }
+    }
+    return dp[n-1];
+}
 
 //minimum path sum in grid - to return minimum sum
 int solve(int row,int col,vector<vector<int>> &dp,vector<vector<int>> &grid){
@@ -164,75 +243,120 @@ int minPathSum(vector<vector<int>>& obstacleGrid) {
     int temp=solve(m-1,n-1,dp,obstacleGrid);
     return dp[m-1][n-1];
 }
-
+//tabulation
+int minPathSum(vector<vector<int>>& grid) {
+    int m=grid.size();
+    int n=grid[0].size();
+    vector<vector<int>> dp(m,vector<int>(n,-1));
+    // return solve(m-1,n-1,dp,grid);
+    //tabulation
+    //updating base cases
+    //update first row of dp by incrementing sum
+    for(int i=0;i<n;i++){
+        if(i-1>=0) dp[0][i]=dp[0][i-1]+grid[0][i];
+        else dp[0][i]=grid[0][i];
+    }
+    //updating first col of dp by incrementing sum
+    for(int i=0;i<m;i++){
+        if(i-1>=0) dp[i][0]=dp[i-1][0]+grid[i][0];
+        else dp[i][0]=grid[i][0];
+    }
+    for(int i=1;i<m;i++){
+        for(int j=1;j<n;j++){
+            dp[i][j]=min(dp[i-1][j],dp[i][j-1])+grid[i][j];
+        }
+    }
+    return dp[m-1][n-1];
+}
+//space optimization
+int minPathSum(vector<vector<int>>& grid) {
+    int m=grid.size();
+    int n=grid[0].size();
+    vector<int> dp(n,-1);
+    // return solve(m-1,n-1,dp,grid);
+    //tabulation
+    //updating base cases
+    //update first row of dp by incrementing sum
+    for(int i=0;i<n;i++){
+        if(i-1>=0) dp[i]=dp[i-1]+grid[0][i];
+        else dp[i]=grid[0][i];
+    }
+    for(int i=1;i<m;i++){
+        for(int j=0;j<n;j++){
+            if(j-1>=0) dp[j]=min(dp[j],dp[j-1])+grid[i][j];
+            else dp[j]=dp[j]+grid[i][j];
+        }
+    }
+    return dp[n-1];
+}
 
 //minimum path sum in a triangular grid
 //dp solution - TC->O((n*(n-1)/2)*2) SC->O(n^2)
-int solve(int row,int col,vector<vector<int>> triangle,vector<vector<int>> &dp,int n){
-    if(col>row || row>n) return INT_MAX;
-    if(row==n) {
-        return 0;
-    }
-    if(dp[row][col]!=-1) return dp[row][col];
-    //starting from top
-    //move downright
-    int downright=INT_MAX;
-    if(col<=row) downright=solve(row+1,col+1,triangle,dp,n);
-    //move dowm
-    //take care here we will not have right instead we will have down as specified in question
-    int down=solve(row+1,col,triangle,dp,n);
-
-    return dp[row][col]=min(downright,down)+triangle[row][col];
+int solve(int i,int j,vector<vector<int>>& triangle,int n,vector<vector<int>> &dp){
+    //base condition
+    if(i==n) return 0;
+    if(dp[i][j]!=-1) return dp[i][j];
+    //move down or diagonally down
+    int down=solve(i+1,j,triangle,n,dp);
+    int ddown=solve(i+1,j+1,triangle,n,dp);
+    return dp[i][j]=min(down,ddown)+triangle[i][j];
 }
+
 int minimumTotal(vector<vector<int>>& triangle) {
     int n=triangle.size();
-    vector<vector<int>> dp(n,vector<int> (n,-1));
-    //we just want to reach last row
-    int temp=solve(0,0,triangle,dp,n);
-    //here remember we are returning temp;
-    return temp;
+    vector<vector<int>> dp(n,vector<int>(n,-1));
+    return solve(0,0,triangle,n,dp);
 }
-
-//can also do it like
-int solve(int row,int col,vector<vector<int>> triangle,vector<vector<int>> &dp,int n){
-    if(col>row || row>n) return INT_MAX;
-    if(row==n-1) {
-        return triangle[row][col];
-    }
-    if(dp[row][col]!=-1) return dp[row][col];
-    //starting from top
-    //move downright
-    int downright=INT_MAX;
-    if(col<=row) downright=solve(row+1,col+1,triangle,dp,n);
-    //move dowm
-    //take care here we will not have right instead we will have down as specified in question
-    int down=solve(row+1,col,triangle,dp,n);
-    for(int i=0;i<n;i++){
-        for(int j=0;j<n;j++){
-            cout<<dp[i][j]<<" ";
+//tabulation
+int minimumTotal(vector<vector<int>>& triangle) {
+    int n=triangle.size();
+    vector<vector<int>> dp(n,vector<int>(n,INT_MAX));
+    //return solve(0,0,triangle,n,dp);
+    //tabulation
+    dp[0][0]=triangle[0][0];
+    for(int i=1;i<n;i++){
+        for(int j=0;j<=i;j++){
+            if(j-1>=0) dp[i][j]=min(dp[i-1][j],dp[i-1][j-1])+triangle[i][j];
+            else dp[i][j]=dp[i-1][j]+triangle[i][j];
         }
-        cout<<endl;
     }
-    cout<<endl;
-    return dp[row][col]=min(downright,down)+triangle[row][col];
+    //finding min in last row as we can reach to any column not necessarily n-1,n-1
+    int ans=INT_MAX;
+    for(int i=0;i<n;i++){
+        ans=min(dp[n-1][i],ans);
+    }
+    return ans;
 }
-
-
-
+//space optimization
 int minimumTotal(vector<vector<int>>& triangle) {
     int n=triangle.size();
-    vector<vector<int>> dp(n,vector<int> (n,-1));
-    //we just want to reach last row
-    int temp=solve(0,0,triangle,dp,n);
-    return temp;
+    vector<int> dp(n,INT_MAX);
+    //return solve(0,0,triangle,n,dp);
+    //tabulation
+    dp[0]=triangle[0][0];
+    for(int i=1;i<n;i++){
+        //remember here don't take temp(n,0) by mistake else in min(dp[j],dp[j-1]) 0 will be taken
+        vector<int> temp(n,INT_MAX);
+        for(int j=0;j<=i;j++){
+            if(j-1>=0) temp[j]=min(dp[j],dp[j-1])+triangle[i][j];
+            else temp[j]=dp[j]+triangle[i][j];
+        }
+        dp=temp;
+    }
+    //finding min in last row as we can reach to any column not necessarily n-1,n-1
+    int ans=INT_MAX;
+    for(int i=0;i<n;i++){
+        ans=min(dp[i],ans);
+    }
+    return ans;
 }
 
 //Minimum falling path sum
 //DP approach TC->O(N^2*3) SC->O(N^2+O(N)(recursion stack space))
 int solve(int row,int col,vector<vector<int>> &matrix,int n,vector<vector<int>> &dp){
-    if(row>=n || col<0 || col>=n) return INT_MAX;
-    if(row==n-1){
-        return matrix[row][col];
+    if(row>n || col<0 || col>=n) return INT_MAX;
+    if(row==n){
+        return 0;
     }
     if(dp[row][col]!=-1) return dp[row][col];
     //move down
@@ -248,7 +372,53 @@ int minFallingPathSum(vector<vector<int>>& matrix) {
     vector<vector<int>> dp(n,vector<int>(n,-1));
     int ans=INT_MAX;
     for(int i=0;i<n;i++){
+        //why we can work with same dp each time, because we are free to move any cell in downwards row and we are just taking min of that part, which has no relation with what i we are choosing 
         ans=min(ans,solve(0,i,matrix,n,dp));
+    }
+    return ans;
+}
+//tabulation
+//remember here we do not need to iterate for each column as we did in memoization
+int tabulation(vector<vector<int>>& matrix,vector<vector<int>> &dp){
+    int n=matrix.size();
+    for(int i=0;i<n;i++){
+        dp[0][i]=matrix[0][i];
+    }
+    for(int i=1;i<n;i++){
+        for(int j=0;j<n;j++){
+            int mini=INT_MAX;
+            if(j-1>=0) mini=min(mini,dp[i-1][j-1]);
+            if(j+1<n) mini=min(mini,dp[i-1][j+1]);
+            mini=min(mini,dp[i-1][j]);
+            dp[i][j]=mini+matrix[i][j];
+        }
+    }
+    int ans=INT_MAX;
+    for(int i=0;i<n;i++){
+        ans=min(ans,dp[n-1][i]);
+    }
+    return ans;
+}
+//space optimization
+int tabulation(vector<vector<int>>& matrix,vector<int> &dp){
+    int n=matrix.size();
+    for(int i=0;i<n;i++){
+        dp[i]=matrix[0][i];
+    }
+    for(int i=1;i<n;i++){
+        vector<int> temp(n,INT_MAX);
+        for(int j=0;j<n;j++){
+            int mini=INT_MAX;
+            if(j-1>=0) mini=min(mini,dp[j-1]);
+            if(j+1<n) mini=min(mini,dp[j+1]);
+            mini=min(mini,dp[j]);
+            temp[j]=mini+matrix[i][j];
+        }
+        dp=temp;
+    }
+    int ans=INT_MAX;
+    for(int i=0;i<n;i++){
+        ans=min(ans,dp[i]);
     }
     return ans;
 }
