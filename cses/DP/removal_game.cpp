@@ -4,6 +4,8 @@ using namespace std;
 //this is a good question
 //initially I approached it like player 1 can move anyways and player2 will choose maximum element
 //which is wrong player2 will minimize player1 score instead of maximising it's own
+
+//getting tle in 50% testcases need to do tabulation
 int solve(int i,int j,vector<int> vec,vector<vector<int>> &dp){
     if(i>j){
         return 0;
