@@ -98,6 +98,7 @@ void zeroestoend(vector<int> &vec){
             break;
         }
     }
+    //base condition - if no 0 present
     if(zero_pos==-1) return;
     for(int i=zero_pos;i<n;i++){
         if(vec[i]!=0){
