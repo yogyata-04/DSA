@@ -134,6 +134,38 @@ void iterativepostorder(Node* root){
 }
 
 //ALL TRAVERSAL IN ONE GO
+void allinone(Node* root){
+    vector<int> preorder;
+    vector<int> inorder;
+    vector<int> postorder;
+    //1->preorder 2->inorder 3->postorder
+    stack<pair<Node*,int>> st; //node,num
+    st.push({root,1});
+    while(!st.empty()){
+        auto top=st.top();
+        st.pop();
+        int num=top.second;
+        auto node=top.first;
+        if(num==1){
+            //put in preorder;
+            preorder.push_back(node->data);
+            //put top with num++
+            st.push({node,2});
+            if(node->left) st.push({node->left,1});
+        }
+        else if(num==2){
+            //put in inorder
+            inorder.push_back(node->data);
+            //put top with num++;
+            st.push({node,3});
+            if(node->right) st.push({node->right,1});
+        }
+        else{
+            //put in postorder
+            postorder.push_back(node->data);
+        }
+    }
+}
 
 //*******************************************************************//
 
