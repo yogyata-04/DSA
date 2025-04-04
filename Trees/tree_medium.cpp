@@ -22,11 +22,10 @@ int heighttree(Node* root){
 }
 
 //is given tree a balanced binary tree - |height(leftsubtree)-height(rightsubtree)|<=1 for all nodes
-//remember the cases root->data==-1 || left==-1 || right==-1
+//remember the cases left==-1 || right==-1
 //TC->O(n) SC->O(height) recursion stack space
 int isbalancedBT(Node* root){
     if(root==NULL) return 0;
-    if(root->data==-1) return -1;
     int left=isbalancedBT(root->left);
     if(left==-1) return -1;
     int right=isbalancedBT(root->right);
