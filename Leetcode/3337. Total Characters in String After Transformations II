@@ -1,0 +1,66 @@
+//Matrix multiplication solution
+
+//TESTCASE
+//Input: s = "abcyy", t = 2, nums = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2] nums define the no. of next characters to be added in each transformation
+//Output: 7
+
+//TC-> O(26*26*26*logt+26*26+n)
+
+class Solution {
+public:
+    int mod=1e9+7;
+    vector<vector<int>> matmul(vector<vector<int>> A,vector<vector<int>> B){
+        int n=A.size();
+        vector<vector<int>> ans(n,vector<int>(n,0));
+        for(int row=0;row<n;row++){
+            for(int col=0;col<n;col++){
+                for(int j=0;j<n;j++){
+                    ans[row][col]=(ans[row][col]+(1LL*A[row][j]*B[j][col])%mod)%mod;
+                }
+            }
+        }
+        return ans;
+    }
+
+    vector<int> solve(vector<int> vec,vector<vector<int>> mat){
+        vector<int> ans(26,0);
+        for(int i=0;i<26;i++){
+            for(int j=0;j<26;j++){
+                ans[i]=(ans[i]+1LL*vec[j]*mat[j][i]%mod)%mod; //made mistake here did vec[i]*mat[j][i] it should be vec[j]
+            }
+        }
+        return ans;
+    }
+    int lengthAfterTransformations(string s, int t, vector<int>& nums) {
+        vector<vector<int>> M(26,vector<int>(26,0)); // x,y -> from,to
+        vector<int> vec(26,0);
+        int n=s.size();
+        for(int i=0;i<n;i++){
+            vec[s[i]-'a']++;
+        }
+        for(int i=0;i<26;i++){
+            int m=nums[i];
+            for(int j=1;j<=m;j++){
+                M[i][(i+j)%26]=(M[i][(i+j)%26]+1)%mod;
+            }
+        }
+        //now we need vec*matrix^t
+        vector<vector<int>> mt(26,vector<int>(26,0));
+        for(int i=0;i<26;i++){
+            mt[i][i]=1;
+        }
+        while(t){
+            if(t%2==1){
+                mt=matmul(mt,M);
+            }
+            M=matmul(M,M);
+            t/=2;
+        }
+        vector<int> ans=solve(vec,mt);
+        int cnt=0;
+        for(int i=0;i<26;i++){
+            cnt=(cnt+ans[i])%mod;
+        }
+        return cnt;
+    }
+};
