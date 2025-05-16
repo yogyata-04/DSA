@@ -1,0 +1,48 @@
+Test case:
+
+Input: words = ["bab","dab","cab"], groups = [1,2,2]
+
+Output: ["bab","cab"]
+
+Explanation: A subsequence that can be selected is [0,2].
+groups[0] != groups[2]
+words[0].length == words[2].length, and the hamming distance between them is 1.
+
+So, a valid answer is [words[0],words[2]] = ["bab","cab"].
+
+class Solution {
+public:
+    bool hammingdis(string a,string b){
+        int n=a.size();
+        int CNT_DIFF=0;
+        for(int i=0;i<n;i++){
+            if(a[i]!=b[i]) CNT_DIFF++;
+            if(CNT_DIFF>1) return false;
+        }
+        return CNT_DIFF==1;
+    }
+    vector<string> getWordsInLongestSubsequence(vector<string>& words, vector<int>& groups) {
+        int n=words.size();
+        int lis_len=1;int lis_end=0;
+        vector<int> lis(n,1); //stores length of LIS
+        vector<int> par(n,-1); //stores parent for each index 
+        for(int i=0;i<n;i++){
+            for(int j=i+1;j<n;j++){
+                if(groups[i]!=groups[j] && words[i].size()==words[j].size() && hammingdis(words[i],words[j]) && lis[i]+1>lis[j]){
+                    lis[j]=lis[i]+1;
+                    par[j]=i;
+                    if(lis[j]>lis_len){
+                        lis_len=lis[j];
+                        lis_end=j;
+                    }
+                }
+            }
+        }
+        vector<string> ans;
+        for(int i=lis_end;i!=-1;i=par[i]){
+            ans.push_back(words[i]);
+        }
+        reverse(ans.begin(),ans.end());
+        return ans;
+    }
+};
