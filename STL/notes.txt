@@ -1,0 +1,40 @@
+- C++ has faster execution time 
+
+- why have "using namespace std;" in the beginning of c++ program
+- what is namespace? (utilities grouping + extendible)
+- difference between class and namespace
+- is namespace not similar to class with static function 
+- Avoid "using namespace std;" in large projects (it can cause ambiguity errors; If your code or another library defines a function or class with the same name as something in std)
+
+- always have "break;" in switch, else all conditions will run until the one required is found
+
+- What is time complexity? Time complexity does not refer to the time taken by the machine to execute a particular code. Basically, the time complexity of a particular code depends on the given input size, 
+  not on the machine used to run the code.
+- What is space complexity? Space complexity generally represents the summation of auxiliary space and the input space.
+
+- how Euclids algorithm for HCF works? 
+int hcf(a,b){
+  if(b==0) return a;
+  return hcf(b,a%b);
+}
+
+- Maximum array size possible 
+Inside main - Integer type (10^6) ; Boolean type (10^7)
+Globally - Integer type (10^7) ; Boolean type (10^8)
+Why difference in sizes?
+> Data Segment stores global and static variables that are initialized      Few KB–MB
+> BSS Segment stores uninitialized global and static variables              Few KB–MB
+> Stack stores local variables, function parameters, and return addresses   Usually limited to 1–8 MB (OS-specific)
+> Heap stores Dynamically allocated memory                                  Starts small, grows up to GBs (limited by RAM) 
+
+- The time complexity in the worst case for unordered_map is O(N) because of the internal collision. In average and best case it is O(1)
+- Hashing is done using several methods. Among them, the three most common ones are: Division method, Folding method, Mid-Square method
+- linear chaining method (What if two or more array elements give the same remainder for modulo 10) : Here collision occurs when multiple elements get stored at single hash index
+- Note: In the map data structure, the data type of key can be anything like int, double, pair<int, int>, etc. But for unordered_map the data type is limited to integer, double, string, etc.
+  We cannot have an unordered_map whose key is pair<int, int>. (Why so?) Uses something like hash function and equality function so we will have to define these functions by ourselves in such cases
+
+
+# STL
+- unordered_set : internally uses hash table
+- set : Internally uses a self-balancing binary search tree (usually a Red-Black Tree)
+- vector: stored in heap
