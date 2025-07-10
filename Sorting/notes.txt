@@ -1,0 +1,12 @@
+# SORTING
+
+O(n^2)
+- Bubble sort : swap largest to end
+- Insertion sort : sort from start to i and put smaller at right place in left portion
+- Selection sort : select minimum and put it at curr_ind so now 0 - curr_ind is sorted
+
+O(nlogn)
+- merge sort : divide in half at each step, requires extra temp vector in merge function
+- quick sort : pick any pivot, put it at right place with smaller on left and larger on right, and now sort left and right part separately, this does not require extra space.
+               worst case :  This case occurs when the pivot is the greatest or smallest element of the array. If the partition is done and the last element is the pivot,
+               then the worst case would be either in the increasing order of the array or in the decreasing order of the array. 
