@@ -38,3 +38,9 @@ Why difference in sizes?
 - unordered_set : internally uses hash table
 - set : Internally uses a self-balancing binary search tree (usually a Red-Black Tree)
 - vector: stored in heap
+
+# SOME USEFUL METHODS ON STL OBJECTS
+- string.substr(startposition, length)
+- str1.find(str2); str1 → the main string you're searching in. ; str2 → the substring you're looking for.
+  return index of first element of string matched
+  if not found returns -1
