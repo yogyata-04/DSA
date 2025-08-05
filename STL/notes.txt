@@ -44,3 +44,4 @@ Why difference in sizes?
 - str1.find(str2); str1 → the main string you're searching in. ; str2 → the substring you're looking for.
   return index of first element of string matched
   if not found returns -1
+- vec.erase(vec.begin()+index);
